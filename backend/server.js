@@ -25,7 +25,7 @@ app.use("/api/shelters", shelterRoutes);
 app.use("/api/donations", donationRoutes);
 
 // Synchronize Sequelize models (Only if using PostgreSQL)
-if (process.env.DB_TYPE === "postgres") {
+if (process.env.DB_DIALECT === "postgres")  {
     sequelize.sync({ alter: true })
         .then(() => console.log("✅ PostgreSQL models synchronized"))
         .catch((err) => console.error("❌ Error syncing PostgreSQL models:", err));

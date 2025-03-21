@@ -3,20 +3,18 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const sequelize = new Sequelize(process.env.POSTGRES_DB, process.env.POSTGRES_USER, process.env.POSTGRES_PASSWORD, {
-    host: process.env.POSTGRES_HOST,
-    dialect: "postgres",
-    logging: false, // Set to true for debugging SQL queries
-});
+const isProduction = process.env.NODE_ENV === "production";
 
-const connectDB = async () => {
-    try {
-        await sequelize.authenticate();
-        console.log("✅ PostgreSQL connected successfully!");
-    } catch (error) {
-        console.error("❌ PostgreSQL connection error:", error);
-        process.exit(1);
+const sequelize = new Sequelize(
+    isProduction ? process.env.DB_NAME : "database/db.sqlite",
+    process.env.DB_USER,
+    process.env.DB_PASS,
+    {
+        host: process.env.DB_HOST,
+        dialect: isProduction ? "postgres" : "sqlite",
+        storage: isProduction ? undefined : "database/db.sqlite",
+        logging: false
     }
-};
+);
 
-module.exports = { sequelize, connectDB };
+module.exports = sequelize;
